@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+ 
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            name="Gerar Uml de Java Project"
+            id="Engenharia_Reversa">
+      </category>
+      <wizard
+            name="Gerar UMl"
+            icon="icons/sample.gif"
+            category="Engenharia_Reversa"
+            class="engenharia_reversa.wizards.SampleNewWizard"
+            id="engenharia_reversa.wizards.SampleNewWizard">
+      </wizard>
+   </extension>
+   
+
+</plugin>

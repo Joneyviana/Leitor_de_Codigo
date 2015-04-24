@@ -1,0 +1,5 @@
+class:visibility class name 
+method:visibility type name(.*)
+attribute:visibility type name$
+inherit:extend name
+association:new name(.*)
