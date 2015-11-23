@@ -22,7 +22,10 @@ import java.io.*;
 import org.eclipse.ui.*;
 import org.eclipse.ui.ide.IDE;
 
-import editor.editors.diagrams;
+
+import UML.UMlModel;
+
+import engenharia_reversa.process.Entity;
 import engenharia_reversa.process.Ler_codigo;
 import engenharia_reversa.process.open;
 
@@ -41,6 +44,8 @@ public class SampleNewWizard extends Wizard implements INewWizard {
 	private SampleNewWizardPage page;
 	private ISelection selection;
     private ArrayList<HashMap<String , Matcher>> currentcontent = new ArrayList<>();
+	private IFile file;
+	private IContainer container;
 	/**
 	 * Constructor for SampleNewWizard.
 	 */
@@ -65,7 +70,7 @@ public class SampleNewWizard extends Wizard implements INewWizard {
 	 */
 	public boolean performFinish() {
 		final String containerName = page.getContainerName();
-		final String fileName = page.getContainerName()+".uml";
+		final String fileName = "Model.uml";
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				try {
@@ -107,16 +112,15 @@ public class SampleNewWizard extends Wizard implements INewWizard {
 		if (!resource.exists() || !(resource instanceof IContainer)) {
 			throwCoreException("Container \"" + containerName + "\" does not exist.");
 		}
-		IContainer container = (IContainer) resource;
+		
+		container = (IContainer) resource;
 		 ;
+		 System.out.println("O Demonio é tão poderoso");
+		 
+		 System.out.println("O Demonio é tão poderoso");
+		 file = container.getFile(new Path(fileName));
+		 
 		 try {
-			leitura_recursiva_em_arquivo(container.getFolder(new Path("/src")));
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		final IFile file = container.getFile(new Path(fileName));
-		try {
 			InputStream stream = openContentStream();
 			if (file.exists()) {
 				file.setContents(stream, true, true, monitor);
@@ -126,6 +130,7 @@ public class SampleNewWizard extends Wizard implements INewWizard {
 			stream.close();
 		} catch (IOException e) {
 		}
+		 leitura_recursiva_em_arquivo();
 		monitor.worked(1);
 		monitor.setTaskName("Opening file for editing...");
 		getShell().getDisplay().asyncExec(new Runnable() {
@@ -144,11 +149,11 @@ public class SampleNewWizard extends Wizard implements INewWizard {
 	
 	/**
 	 * We will initialize file contents with a sample text.
+	 * @throws IOException 
 	 */
 
-	private InputStream openContentStream() {
-		String contents =
-			"<uml></uml>";
+	private InputStream openContentStream() throws IOException {
+		String contents = "<uml></uml>";
 		return new ByteArrayInputStream(contents.getBytes());
 	}
 
@@ -166,34 +171,38 @@ public class SampleNewWizard extends Wizard implements INewWizard {
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		this.selection = selection;
 	}
-
-public void leitura_recursiva_em_arquivo(IContainer container) throws IOException{
-	try {
-		for (int a = 0 ; a<container.members().length;a++){
-			if(container.members()[a].getType() == 2){
-		      IFolder folder =(IFolder)(container.members()[a]);
-			  ArrayList<HashMap<String , Matcher>> conteudo_folder  = new ArrayList<>();
-		      currentcontent = conteudo_folder ;
-			  diagrams dia = diagrams.getInstance();
-		      if (dia.pacote_incial.equals("")){
-		    	  System.out.println("O pacote incia é "+folder.getName());
-		    	  dia.pacote_incial = folder.getName();
-		      }
-			  dia.pacotes.put(folder.getName(), conteudo_folder) ;
-			  leitura_recursiva_em_arquivo(folder);
-			}
-			else {
-				IFile file = (IFile)(container.members()[a]);
-			  Ler_codigo java = new Ler_codigo(new InputStreamReader(  file.getContents()));
-			  java.inicio();
+	public void leitura_recursiva_em_arquivo(){
+		System.out.print("arquivo antes "+file.getLocationURI().getPath());
+		try {
 			
-			  
-			  currentcontent.add(java.results);
+			UMlModel uml = new UMlModel(file.getLocationURI().getPath(),file);
+			System.out.print("arquivo depois "+file.getFullPath());
+			for (int a = 0 ; a<container.members().length;a++){
+				if(container.members()[a].getType() != 2){
+			     
+				  
+				  
+				
+					IFile file = (IFile)(container.members()[a]);
+				
+					Entity entity = new Entity(new Ler_codigo(new InputStreamReader(  file.getContents())));
+				  uml.addEntity(entity);
+				
+				
+				  
+				  
+				}
 			}
+		   uml.build_associations();
+		  
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-	} catch (CoreException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
 	}
-}
+
+
 }

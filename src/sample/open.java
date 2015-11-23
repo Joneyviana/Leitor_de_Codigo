@@ -1,4 +1,4 @@
-package engenharia_reversa.process;
+package sample;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,11 +12,12 @@ import java.net.URI;
 
 
 
-public class open {
-	private BufferedWriter bw ;
-	private String text ="";
-	 private String write ="";
-	 
+
+public  class  open extends heranca {
+	private static BufferedWriter bw ;
+	private String text ;
+	 private String write ;
+	 private Simplefile simple = new Simplefile();
 	private BufferedReader buf ;
 	private File file;	
 	 public open(String str) throws IOException	{
@@ -66,11 +67,15 @@ public String read() throws IOException {
 	
 	return text;
 	}
-//public void write(String content) throws IOException{
+public void write(String content) throws IOException{
 	//bw.write(content);
     //write +=write;
-//}
+}
 public void ajuda(String text){
+	
+
+}
+public void metodo4(String text , String text2){
 	
 
 }

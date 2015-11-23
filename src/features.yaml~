@@ -1,5 +1,5 @@
 class:visibility class name 
-method:visibility type name(.*)
-attribute:visibility type name$
-inherit:extend name
-association:new name(.*)
+method:visibility type name(rest)
+attribute:visibility type name.*;
+inherit:extends name
+association:new name(rest)
