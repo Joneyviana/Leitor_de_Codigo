@@ -46,6 +46,8 @@ public class SampleNewWizard extends Wizard implements INewWizard {
     private ArrayList<HashMap<String , Matcher>> currentcontent = new ArrayList<>();
 	private IFile file;
 	private IContainer container;
+	private IFile filestyle;
+	
 	/**
 	 * Constructor for SampleNewWizard.
 	 */
@@ -70,11 +72,12 @@ public class SampleNewWizard extends Wizard implements INewWizard {
 	 */
 	public boolean performFinish() {
 		final String containerName = page.getContainerName();
-		final String fileName = "Model.uml";
+		final String fileName = containerName.substring(containerName.lastIndexOf("/")+1)+".uml";
+		final String fileName1 = containerName.substring(containerName.lastIndexOf("/")+1)+".di";
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				try {
-					doFinish(containerName, fileName, monitor);
+					doFinish(containerName, fileName,fileName1, monitor);
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);
 				} finally {
@@ -103,6 +106,7 @@ public class SampleNewWizard extends Wizard implements INewWizard {
 	private void doFinish(
 		String containerName,
 		String fileName,
+		String fileName1 ,
 		IProgressMonitor monitor)
 		throws CoreException {
 		// create a sample file
@@ -115,10 +119,19 @@ public class SampleNewWizard extends Wizard implements INewWizard {
 		
 		container = (IContainer) resource;
 		 ;
-		 System.out.println("O Demonio é tão poderoso");
-		 
-		 System.out.println("O Demonio é tão poderoso");
+		
 		 file = container.getFile(new Path(fileName));
+		 filestyle = container.getFile(new Path(fileName1));
+		 try {
+				InputStream stream =new ByteArrayInputStream("".getBytes()); 
+				if (filestyle.exists()) {
+					filestyle.setContents(stream, true, true, monitor);
+				} else {
+					filestyle.create(stream, true, monitor);
+				}
+				stream.close();
+			} catch (IOException e) {
+			}
 		 
 		 try {
 			InputStream stream = openContentStream();
@@ -193,7 +206,7 @@ public class SampleNewWizard extends Wizard implements INewWizard {
 				  
 				}
 			}
-		   uml.build_associations();
+		   uml.create_Attributes();
 		  
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block

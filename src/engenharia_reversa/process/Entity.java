@@ -32,7 +32,7 @@ public Entity(Ler_codigo code){
 	inherit = resultado.get("inherit");
     HasSuperClass = inherit.find();
 	attribute = resultado.get("attribute");
-	association = resultado.get("association");
+	
 }
     
    public String getName(){
@@ -61,8 +61,5 @@ public String getSuperclasse(){
 	   
        return inherit.group("name");
 }
-public Element getAssociation(){
-	   
-    return new Element(association);
-}
+
 }

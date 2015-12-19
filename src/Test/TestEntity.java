@@ -40,7 +40,7 @@ public class TestEntity {
 		
 		operation.find();
 		assertEquals(operation.getname() , "read");
-		assertEquals(operation.getvisibility() , "public");
+		assertEquals(operation.getvisibility() , "+");
 		operation.find();
 		assertEquals(operation.getType() , "void");
 		operation.find();
@@ -89,14 +89,7 @@ public class TestEntity {
 	public void testinherit() {
 		assertEquals("heranca" , entity.getSuperclasse());
 	}
-	@Test
-	public void testassociation() {
-		 Element element = entity.getAssociation();
-		  element.find();
-		 assertEquals("File" ,element.getname());
-		 element.find();
-		 assertEquals("BufferedReader" ,element.getname());
-	}   
+
 	
 }
 	

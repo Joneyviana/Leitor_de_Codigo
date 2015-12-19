@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.uml2.uml.Association;
 import org.eclipse.uml2.uml.Class;
 import org.eclipse.uml2.uml.Property;
 import org.eclipse.uml2.uml.Type;
@@ -42,35 +43,43 @@ public void addEntity(Entity entity){
 	classe = uml.addclasse(name);
 	Operation operation = entity.getOperation();
 	Attribute attribute = entity.getAtribute();
-	Element association = entity.getAssociation();
+	
 	add_operations(operation);
-    add_attributes(attribute);	
+    //add_attributes(attribute);	
     
     if(entity.hasSuperClass())
     uml.addGeneration(classe, entity.getSuperclasse());
 }}
 
-public void build_associations(){
+public void create_Attributes(){
 	for(EObject current_class :uml.classes){
+		
 		for(Entity current_entity:entities){
 		 if(((Class)current_class).getName().equals(current_entity.getName())){
-			add_association(current_entity.getAssociation(), current_class) ;
+			 while(current_entity.getAtribute().find()){
+				 add_Attributes(current_entity.getAtribute(),current_class ) ;
+				 
+			 }break;
 		 }
 	
 		}}
         
 }
 
-public void add_association(Element association , EObject classe_has_association) {
-	while(association.find()){
+public void add_Attributes(Attribute association , EObject classe_has_association) {
+	    Association assoc = null;
 	    for(Entity entity : entities){
-	    	if (entity.getName().equals(association.getname())){
-	    	uml.addAssociation(((Class) classe_has_association), association.getname());
-	        break;
+	    	 
+	    	if (entity.getName().equals(association.gettype())){
+	    	 assoc = uml.addAssociation(((Class) classe_has_association), association.gettype());
+	         uml.save();
+	    	 break;
 	    	}}
-		
+		if( assoc == null){
+			add_attributes_without_association(association,((Class) classe_has_association) );
+		}
 	}
-}
+
 public ParameterUml listarparameters(Operation operation){
 	EList<String> names = new BasicEList<String>();
 	EList<Type> types = new BasicEList<Type>();
@@ -97,15 +106,14 @@ private void add_operations(Operation operation){
 }
 	
 }
-private void add_attributes(Attribute attribute){
-	while(attribute.find()){
+private void add_attributes_without_association(Attribute attribute , Class classe){
+	
 		
-		Property attributeUml = ((Class) classe).createOwnedAttribute(attribute.getname(), uml.handletype(attribute.gettype()));
+		Property attributeUml = classe.createOwnedAttribute(attribute.getname(), uml.handletype(attribute.gettype()));
 		 attributeUml.setVisibility(uml.getVisibility(attribute.getvisibility()));
 		   uml.save(); 
-		uml.save();
-	}
-	}
+		}
+	
 public void refresh(IFile file) throws IOException, CoreException{
 	stream = uml.openContentStream();
 	file.setContents(stream,true, true, null);

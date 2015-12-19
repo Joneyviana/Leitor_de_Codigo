@@ -55,7 +55,7 @@ public class TestUMLModel {
 		uml.addEntity(openentity);
 		uml.addEntity(herancaentity);
 		uml.addEntity(simpleentity);
-		uml.build_associations();
+		uml.create_Attributes();
 		doc = Jsoup.parse(input , "UTF-8"); 
 	}
 		
@@ -85,7 +85,7 @@ public class TestUMLModel {
 	@Test
 	public void testAttribute() {
 		 Elements attribute = doc.select("ownedAttribute");
-	     assertEquals(7 ,attribute.size());
+	     assertEquals(6 ,attribute.size());
 	     assertEquals("bw" , attribute.get(0).attr("name")); 
 	     assertEquals("String" , attribute.get(2).attr("type")); 
 	}
@@ -100,10 +100,7 @@ public class TestUMLModel {
 	public void testAssociation() {
 		
 		
-		Elements attribute = doc.select("ownedAttribute");
-		assertEquals("Simplefile" , attribute.get(6).attr("name")); 
-		assertTrue(attribute.get(6).hasAttr("association")); 
-		Elements association = doc.select("ownedAttribute");
+		
 		assertEquals(1 , doc.select("packagedElement[xsi:type=\"uml:Association\"]").size());
 	}
 } 

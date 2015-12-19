@@ -1,5 +1,4 @@
-class:visibility class name 
+class:class name 
 method:visibility type name(rest)
 attribute:visibility type name.*?;
 inherit:extends name
-association:new name(rest)
